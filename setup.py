@@ -18,8 +18,7 @@ Description = Summary
 ShortDescription = Summary
 
 needed = [
-    'sphinx', # for docs generation.
-    'evasion-common',
+    'cmdln',
     'redis'
 ]
 
@@ -34,7 +33,6 @@ EagerResources = [
 
 # Example including shell script out of scripts dir
 ProjectScripts = [
-#    'pp.signals/scripts/somescript',
 ]
 
 PackageData = {
@@ -44,7 +42,7 @@ PackageData = {
 # Example console script and paster template integration:
 EntryPoints = {
     'console_scripts': [
-        'signalsapp = pp.signals.scripts.main:main',
+        'signal-admin = pp.signals.scripts.main:main',
     ],
 }
 
@@ -59,10 +57,10 @@ setup(
     description=ShortDescription,
     long_description=Description,
     classifiers=[
-      "Programming Language :: Python",
-      "Framework :: Pylons",
-      "Topic :: Internet :: WWW/HTTP",
-      "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+        "Programming Language :: Python",
+        "Framework :: Pylons",
+        "Topic :: Internet :: WWW/HTTP",
+        "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
     ],
     license=License,
     scripts=ProjectScripts,

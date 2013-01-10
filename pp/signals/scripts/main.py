@@ -1,64 +1,30 @@
 # -*- coding: utf-8 -*-
 """
-Oisin Mulvihill
-2007-05-18
+The admin tool main as configured in the setup.py
 
 """
-import os
 import sys
-import time
-import os.path
 import logging
-import ConfigParser
-import logging.config
-from optparse import OptionParser
+
+from .adminctl import AdminCtl
 
 
-def get_log():
-    return logging.getLogger("pp.signals.scripts.main")
-
-
-def logtoconsolefallback(log):
-    # Log to console instead:
+def main():
+    """bookingsys-admin main script as set up in the 'setup.py'."""
+    log = logging.getLogger()
     hdlr = logging.StreamHandler()
-    formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
+    fmt = '%(asctime)s %(name)s %(levelname)s %(message)s'
+    formatter = logging.Formatter(fmt)
     hdlr.setFormatter(formatter)
     log.addHandler(hdlr)
     log.setLevel(logging.DEBUG)
     log.propagate = False
 
-
-def main():
-    """
-    """
-    current_dir = "%s" % os.path.abspath(os.curdir)
-
-    parser = OptionParser()
-
-    parser.add_option(
-        "--config", action="store", dest="config_filename",
-        default='main.ini',
-        help="This director configuration file to use at run time."
-    )
-
-    (options, args) = parser.parse_args()
-
-    log = logging.getLogger()
-
-    # Load the system config:
-    if not os.path.isfile(options.config_filename):
-        sys.stderr.write("The config file name '%s' wasn't found" % options.config_filename)
-        sys.exit(1)
-
-    else:
-        logtoconsolefallback(log)
-
-        # Set up the director config and recover the object from it:
-        log.info("Main: configuration %s" % options.config_filename)
-
+    while True:
         try:
-            log.info("Main Running: current_dir<%s>." % current_dir)
-            while True:
-                time.sleep(1)
+            app = AdminCtl()
+            sys.exit(app.main())
+
         except KeyboardInterrupt:
-            log.info("Ctrl-C caught, exit time.")
+            log.info("Exit time.")
+            break
