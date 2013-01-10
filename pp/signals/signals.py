@@ -73,8 +73,15 @@ class Listener(threading.Thread):
         self.exitTime = True
         self.pubsub.close()
 
+    def on_message(self, channel, data):
+        """
+        """
+        print channel, ":", data
+
     def handle(self, item):
-        print item['channel'], ":", item['data']
+        """Route recived messages to on_message."""
+        if item['type'] == 'message':
+            self.on_message(item['channel'], item['data'])
 
     def run(self):
         self.exitTime = False
@@ -83,7 +90,7 @@ class Listener(threading.Thread):
                 self.handle(item)
 
         except AttributeError:
-            # if its exit time this will be raised by listen as pubsub.close
+            # if its exit time this will be raised by listen, as pubsub.close()
             # was called. This is fine and we can ignore this exception.
             if not self.exitTime:
                 raise
