@@ -16,7 +16,7 @@ class Listener(threading.Thread):
     cause the run() to exit.
 
     """
-    def __init__(self, config={}):
+    def __init__(self, config={}, no_sig_setup=False):
         """Set up the listener's Redis config.
 
             config = {
@@ -32,16 +32,20 @@ class Listener(threading.Thread):
 
         host = config.get("redis.host", "0.0.0.0")
         port = int(config.get("redis.port", 6379))
-        db = config.get("redis.db", 0)
+        db = config.get("redis.db", 7)
         channels = config.get("redis.channels", "")
         channels = [c.strip() for c in channels.split(',') if c]
         self.log.info("Config host: {0}, port: {1}, channels: {2!r}".format(
             host, port, channels
         ))
 
-        signal.signal(signal.SIGINT, self.syssig_handler)
-        signal.signal(signal.SIGHUP, self.syssig_handler)
-        signal.signal(signal.SIGTERM, self.syssig_handler)
+        if not no_sig_setup:
+            signal.signal(signal.SIGINT, self.syssig_handler)
+            signal.signal(signal.SIGHUP, self.syssig_handler)
+            signal.signal(signal.SIGTERM, self.syssig_handler)
+
+        else:
+            self.log.warn("SIG* signal intercept disabled.")
 
         self.redis = redis.StrictRedis(host, port=port, db=db)
         self.pubsub = self.redis.pubsub()
